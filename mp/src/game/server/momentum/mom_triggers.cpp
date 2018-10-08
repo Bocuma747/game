@@ -148,6 +148,8 @@ void CTriggerTimerStart::EndTouch(CBaseEntity *pOther)
             // The Start method could return if CP menu or prac mode is activated here
             if (g_pMomentumTimer->IsRunning())
             {
+                pPlayer->m_TASRecords->Start();
+
                 // Used for trimming later on
                 if (g_ReplaySystem.m_bRecording)
                 {
@@ -207,6 +209,8 @@ void CTriggerTimerStart::StartTouch(CBaseEntity *pOther)
     CMomentumPlayer *pPlayer = ToCMOMPlayer(pOther);
     if (pPlayer)
     {
+        pPlayer->m_TASRecords->Reset();
+
         g_pMOMSavelocSystem->SetUsingSavelocMenu(false); // It'll get set to true if they teleport to a CP out of here
         pPlayer->ResetRunStats(); // Reset run stats
         pPlayer->m_SrvData.m_RunData.m_bMapFinished = false;
@@ -302,6 +306,8 @@ void CTriggerTimerStop::StartTouch(CBaseEntity *pOther)
         g_pMomentumTimer->SetEndTrigger(this);
         if (g_pMomentumTimer->IsRunning() && !pPlayer->IsSpectatingGhost())
         {
+            pPlayer->m_TASRecords->Stop();
+
             int zoneNum = pPlayer->m_SrvData.m_RunData.m_iCurrentZone;
 
             // This is needed so we have an ending velocity.
